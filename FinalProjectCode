@@ -1,0 +1,160 @@
+import turtle #start turtle
+pen = turtle.Turtle()
+screen = pen.getscreen()
+screen.setworldcoordinates(1850,-10,2050,25)
+screen.tracer(1)
+Climate = {1890: 13.68, 1900: 13.67, 1910: 13.59, 1920: 13.64, 1930: 13.76, 1940: 13.89, 1950: 13.95, 1960: 13.92, 1970: 13.93, 1980: 13.95, 1990: 14.12, 2000: 14.26, 2010: 14.47} #data x,y pairs (note: y values can be changed and program will still work)
+
+totaltemp = 0 #initialize
+countitem = 0 #initialize
+
+def GraphSetup():
+  pen.up()    #creating border of x + y axis lines 
+  pen.goto(1885,10)
+  pen.down()
+  pen.goto(2015,10)
+  pen.up()
+  pen.goto(1885,10)
+  pen.down()
+  pen.goto(1885,16)
+  pen.up()
+
+  pen.up()                        #title and axis labels
+  pen.goto(1920,17) #goto title
+  pen.down()
+  pen.write("Date vs Annual Temperature", font=("Courier",2,"normal")) #writies title
+  pen.up()
+  pen.goto(1930,7) #goto x axis
+  pen.write("Date in Years", font=("Courier",1,"normal")) #write x axis
+  pen.goto(1873.5,13.5)
+  pen.write("Annual", font=("Courier",1,"normal")) #write y axis 
+  pen.goto(1872,12.5)
+  pen.write("Temperature", font=("Courier",1,"normal"))
+  pen.goto(1872.75,11.5)
+  pen.write("(Celcius)", font=("Courier",1,"normal"))
+
+  RepeatsForY = 0
+  y = 10
+  while RepeatsForY < 7: #looping for tickmarks on y axis
+    RepeatsForY += 1 #adds num of repeats done already
+    pen.up()
+    pen.goto(1885,y) 
+    pen.down()
+    pen.goto(1884,y) 
+    pen.goto(1886,y)
+    pen.up() 
+    pen.goto(1882,y-0.5) #go to here before writing num
+    pen.down()
+    pen.write(str(y), font=("Courier",1,"normal")) #starts labeling x axis
+    y += 1
+
+  RepeatsForX = 0
+  x = 1890
+  while RepeatsForX < 13:
+    RepeatsForX += 1 #adds num of repeats done 
+    pen.up()
+    pen.goto(x,10)
+    pen.down()
+    pen.goto(x,10.3)
+    pen.goto(x,9.7)
+    pen.up()
+    pen.goto(x-1,8.6)
+    pen.write(str(x), font=("Courier",1,"normal")) #writes value of x (years)
+    x += 10 #sends next tick 10 years over
+
+def linegraph():
+  pen.reset() #reset turtle drawing
+  GraphSetup() #calls to setup function
+  for year, temp in Climate.items(): #checks array 
+    pen.goto(year,temp) #sends turtle to each point in a line
+    pen.down()
+    if temp < 13.91: #gives blue color to points < 14
+      pen.pencolor("blue") 
+      pen.fillcolor("blue")
+    if temp >= 13.91: #gives red color to points >= 14
+      pen.pencolor("red") 
+      pen.fillcolor("red")
+    pen.hideturtle()
+    
+def scatterplot(): 
+  pen.reset() #reset turtle drawing
+  GraphSetup() #calls to setup function
+  for year, temp in Climate.items(): 
+    pen.shape("circle")
+    pen.up()
+    pen.goto(year,temp)
+    pen.down()
+    if temp < 13.91: #gives blue color to points < 14
+      pen.pencolor("blue")
+      pen.fillcolor("blue")
+    if temp >= 13.91:  #gives red color to points >= 14
+      pen.pencolor("red")
+      pen.fillcolor("red")
+    pen.stamp()
+    pen.hideturtle()
+
+def bargraph():
+  pen.reset() #reset turtle drawing
+  GraphSetup() #calls to setup function
+  for year, temp in Climate.items(): 
+    if temp < 13.91: #gives blue color to points < 14
+      pen.pencolor("blue")
+      pen.fillcolor("blue")
+    if temp >= 13.91:  #gives red color to points >= 14
+      pen.pencolor("red")
+      pen.fillcolor("red")
+    pen.up()              #makes one bar near current x value with temp height
+    pen.goto(year-1,10)
+    pen.down()
+    pen.begin_fill()
+    pen.goto(year-1,temp)
+    pen.goto(year+1,temp)
+    pen.goto(year+1,10)
+    pen.goto(year-1,10)
+    pen.end_fill()
+    pen.down()
+    pen.hideturtle()
+
+Start = "no"
+while Start != "yes": 
+  Start = input("Do you want to view data? (yes/no)")
+
+if Start == "yes": 
+  for year, temp in Climate.items(): #loop for all values
+    totaltemp += temp #add each temp onto total
+    countitem += 1 #how many values
+    avgtemp = totaltemp/countitem #average them
+  print("\nThe average annual temperature across all years was "+str(avgtemp) + " degrees Celcius") #print
+
+  YearOfMaxTemp = max(Climate) #year of max calculated 
+  MaxTemp = Climate[YearOfMaxTemp] #temp of that year 
+  print("\nThe year "+ str(YearOfMaxTemp) + " had a maxiumum annual temperature of "+ str(MaxTemp)+ " degrees Celcius.") #print
+
+  YearOfMinTemp = min(Climate) #year of min calculated 
+  MinTemp = Climate[YearOfMinTemp] #temp of that year 
+  print("\nThe year "+ str(YearOfMinTemp) + " had a minimum annual temperature of "+ str(MinTemp)+ " degrees Celcius.") #print
+
+  Graph = input("\n\nWhat kind of graph would you like to view these datapoints in? (scatterplot, linegraph, or bargraph)") #asks what first graph you want
+
+  if Graph == "scatterplot": #conditionals calling to each of their graphs based on user input
+    scatterplot()
+  elif Graph == "bargraph":
+    bargraph()
+  elif Graph == "linegraph":
+    linegraph()
+  else: 
+    print("\nDidn't catch that, please enter a valid graph after restarting") #Error catching
+  
+  again = input("Would you like to try another graph? (yes/no)") #asks user for more graphs
+  while again == "yes":
+    Graph = input("What graph would you like to view this time? (scatterplot, linegraph, or bargraph)") #asks what kind of graph again
+    if Graph == "scatterplot":
+      scatterplot()
+    elif Graph == "bargraph":
+      bargraph()
+    elif Graph == "linegraph":
+      linegraph()
+    else: 
+      print("\nDidn't catch that, please enter a valid graph after restarting") #Error catching
+    again = input("Would you like to try another graph? (yes/no)") #keeps user in loop if yes 
+  print("Program is over") #final
